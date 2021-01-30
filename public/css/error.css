@@ -1,0 +1,7 @@
+@charset "utf-8";
+/* CSS Document */
+body, html{margin:0; overflow-x:hidden;}
+.error_page{width:100%; text-align:center;}
+.message_box{width:290px; height:180px; margin:0 auto; margin-top:11%; background:url(../img/ipccp/img_error.png) left 18px no-repeat; padding-left:180px; text-align:left; font:bold 120px "Arial Black","Arial"; color:#96a9b3;}
+.text_box{min-height:50px; width:450px; text-align:center; font: bold 14px "Malgun Gothic","맑은 고딕","Arial"; word-wrap:break-word; padding:5px 10px; line-height:1.5em; color:#333; margin:0 auto;}
+button.btn_confirm{outline:none; border-radius:3px; padding:5px 10px 8px; min-width:150px; min-height:50px; background-color:#d4dde2; color:#434c51; border:none; font: bold 17px "Malgun Gothic","맑은 고딕","Arial"; margin-top:20px; box-sizing:border-box;-webkit-box-sizing:border-box;-moz-box-sizing:border-box; line-height:1em; cursor:pointer;}
