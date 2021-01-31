@@ -77,37 +77,45 @@
       </template>
 
       <template v-slot:body>
-        <table class="type_03">
-          <caption>
-            기본정보
-          </caption>
-          <colgroup>
-            <col width="24%" />
-            <col width="*" />
-          </colgroup>
-          <tbody>
-            <tr>
-              <th class="point">Deployment</th>
-              <td><input ref="deployment" type="text" /></td>
-            </tr>
-            <tr>
-              <th class="point">Namesapce</th>
-              <td><input type="text" /></td>
-            </tr>
-            <tr>
-              <th class="point">Replicas</th>
-              <td><input type="text" /></td>
-            </tr>
-            <tr>
-              <th class="point">Trigger Stg.</th>
-              <td><input type="text" /></td>
-            </tr>
-            <tr>
-              <th class="point">Update Stg.</th>
-              <td><input type="text" /></td>
-            </tr>
-          </tbody>
-        </table>
+        <form ref="form">
+          <table class="type_03">
+            <caption>
+              기본정보
+            </caption>
+            <colgroup>
+              <col width="24%" />
+              <col width="*" />
+            </colgroup>
+            <tbody>
+              <tr>
+                <th class="point">Deployment</th>
+                <td>
+                  <input
+                    ref="deployment"
+                    type="text"
+                    v-model.trim="deployment"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th class="point">Namesapce</th>
+                <td><input type="text" v-model.trim="namespace" /></td>
+              </tr>
+              <tr>
+                <th class="point">Replicas</th>
+                <td><input type="text" v-model.number="replicas" /></td>
+              </tr>
+              <tr>
+                <th class="point">Trigger Stg.</th>
+                <td><input type="text" v-model.trim="triggerStg" /></td>
+              </tr>
+              <tr>
+                <th class="point">Update Stg.</th>
+                <td><input type="text" v-model.trim="updateStg" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
       </template>
 
       <template v-slot:footer>
@@ -140,12 +148,17 @@ export default {
   },
   data() {
     return {
-      display: true
+      deployment: '',
+      namespace: '',
+      replicas: 1,
+      triggerStg: '',
+      updateStg: ''
     };
   },
   methods: {
     openModal() {
       console.log('opening modal......');
+      this.resetForm();
       this.$refs.deployModal.openModal();
       this.$nextTick(function() {
         this.$refs.deployment.focus();
@@ -157,7 +170,22 @@ export default {
     },
     saveModal() {
       console.log('saving modal......');
+      const formData = {
+        deployment: this.deployment,
+        namespace: this.namespace,
+        replicas: this.replicas,
+        triggerStg: this.triggerStg,
+        updateStg: this.updateStg
+      };
+      console.log('deployment.formData====>', formData);
       this.$refs.deployModal.closeModal();
+    },
+    resetForm() {
+      this.deployment = '';
+      this.namespace = '';
+      this.replicas = 1;
+      this.triggerStg = '';
+      this.updateStg = '';
     }
   }
 };
