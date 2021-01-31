@@ -769,6 +769,10 @@ ul.step_info li.on:nth-of-type(5) > label{background:url(../images/ipccp/step_nu
   z-index: 98;
   background-color: #000;
 }
+.modal-backdrop.show {
+    opacity: 0.5;
+}
+
 .modal-backdrop.fade {
   filter: alpha(opacity=0);
   opacity: 0;

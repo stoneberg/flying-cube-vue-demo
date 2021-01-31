@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Main from '../views/Main.vue';
-import Application from '../views/Application.vue';
+import Main from '@/views/main/Main.vue';
+import Application from '@/views/application/Application.vue';
 
 const routes = [
   {
@@ -19,14 +19,14 @@ const routes = [
         name: 'Deployment',
         component: () =>
           import(
-            /* webpackChunkName: "deployment" */ '../views/application/Deployment.vue'
+            /* webpackChunkName: "deployment" */ '@/views/application/Deployment.vue'
           )
       },
       {
         path: 'pod',
         name: 'Pod',
         component: () =>
-          import(/* webpackChunkName: "pod" */ '../views/application/Pod.vue')
+          import(/* webpackChunkName: "pod" */ '@/views/application/Pod.vue')
       }
     ]
   }

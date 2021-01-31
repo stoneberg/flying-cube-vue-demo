@@ -18,18 +18,18 @@
           </caption>
           <colgroup>
             <col width="*" />
-            <col width="130px" />
-            <col width="130px" />
-            <col width="130px" />
+            <col width="200px" />
+            <col width="150px" />
+            <col width="150px" />
             <col width="150px" />
           </colgroup>
           <thead>
             <tr>
-              <th>Pod명</th>
-              <th>상태</th>
-              <th>컨테이너 Ready 수</th>
-              <th>총 재시작횟수</th>
-              <th>생성일시</th>
+              <th>Pod</th>
+              <th>Status</th>
+              <th>Container Ready Cnt.</th>
+              <th>Restart Cnt.</th>
+              <th>Created</th>
             </tr>
           </thead>
           <tbody>
@@ -44,7 +44,7 @@
             </tr>
             <tr>
               <td class="left">
-                <em class="bul_p">P</em><a href="#">jenkins</a>
+                <em class="bul_p">P</em><a href="#">nginx</a>
               </td>
               <td>Active</td>
               <td>1</td>
