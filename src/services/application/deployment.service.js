@@ -17,7 +17,7 @@ export default {
   },
 
   async update(id, data) {
-    return Api.post(`${END_POINT}/${id}`, data);
+    return Api.put(`${END_POINT}/${id}`, data);
   },
 
   async delete(id) {

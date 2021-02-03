@@ -4,14 +4,17 @@
     <div class="sub_title">
       <h3>Deployment</h3>
       <div class="search_box">
-        <input type="text" placeholder="Deployment명" /><a
+        <input type="text" v-model="searchName" placeholder="Deployment명" /><a
           href="#"
           class="btn_search"
+          @click.prevent="search()"
           >검색</a
         >
       </div>
       <div class="fr">
-        <a href="#" @click="openModal()" class="btn_create">생성</a>
+        <a href="#" @click.prevent="openCreateModal()" class="btn_create"
+          >생성</a
+        >
       </div>
     </div>
     <!--e:page scroll-->
@@ -44,7 +47,11 @@
               <tr>
                 <td class="left">
                   <em class="bul_d">D</em
-                  ><a href="#">{{ deployment.deploymentName }}</a>
+                  ><a
+                    href="#"
+                    @click.prevent="openUpdateModal(deployment.id)"
+                    >{{ deployment.deploymentName }}</a
+                  >
                 </td>
                 <td>{{ deployment.namespace }}</td>
                 <td>{{ deployment.replicas }}</td>
@@ -66,7 +73,7 @@
   <teleport to="#modal-root">
     <Modal ref="deployModal">
       <template v-slot:header>
-        <h4 class="modal-title">Deployment 생성</h4>
+        <h4 class="modal-title">{{ modalTitle }}</h4>
       </template>
 
       <template v-slot:body>
@@ -84,9 +91,9 @@
                 <th class="point">Deployment</th>
                 <td>
                   <input
-                    ref="deployment"
+                    ref="deploymentName"
                     type="text"
-                    v-model.trim="deployment"
+                    v-model.trim="deploymentName"
                   />
                 </td>
               </tr>
@@ -120,8 +127,16 @@
         >
           취소
         </button>
-        <button class="btn_pop put" @click="saveModal()" type="button">
+        <button
+          v-if="mode === 'save'"
+          class="btn_pop put"
+          @click="save()"
+          type="button"
+        >
           생성
+        </button>
+        <button v-else class="btn_pop put" @click="update()" type="button">
+          수정
         </button>
       </template>
     </Modal>
@@ -132,7 +147,7 @@
 <script>
 import Pagination from '@/components/Pagination.vue';
 import Modal from '@/components/Modal.vue';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'Deployment',
@@ -142,42 +157,123 @@ export default {
   },
   data() {
     return {
-      deployment: '',
+      mode: 'save',
+      modalTitle: '',
+      id: '',
+      deploymentName: '',
       namespace: '',
       replicas: 1,
       triggerStg: '',
-      updateStg: ''
+      updateStg: '',
+      searchName: '',
+      page: 0,
+      size: 10
     };
   },
   methods: {
-    ...mapActions('application', ['getDeployments']),
-
-    openModal() {
+    ...mapActions('application', [
+      'getDeployments',
+      'createDeployment',
+      'updateDeployment'
+    ]),
+    search() {
+      //   if (!this.searchName) {
+      //     alert('deployment name is empty!');
+      //     return;
+      //   }
+      this.getDeployments({
+        deploymentName: this.searchName,
+        page: 0,
+        size: 10
+      });
+    },
+    openCreateModal() {
       console.log('opening modal......');
+      this.mode = 'save';
+      this.modalTitle = 'Deployment 생성';
       this.resetForm();
       this.$refs.deployModal.openModal();
       this.$nextTick(function() {
-        this.$refs.deployment.focus();
+        this.$refs.deploymentName.focus();
       });
     },
     closeModal() {
       console.log('closing modal......');
       this.$refs.deployModal.closeModal();
     },
-    saveModal() {
+    validateForm(formData) {
+      if (!formData.deploymentName) {
+        alert('deploymentName is empty!');
+        return false;
+      } else if (!formData.namespace) {
+        alert('namespace is empty!');
+        return false;
+      } else if (!formData.replicas) {
+        alert('namespace is empty!');
+        return false;
+      } else if (!formData.triggerStg) {
+        alert('triggerStg is empty!');
+        return false;
+      } else if (!formData.updateStg) {
+        alert('updateStg is empty!');
+        return false;
+      }
+      return true;
+    },
+    save() {
       console.log('saving modal......');
       const formData = {
-        deployment: this.deployment,
+        deploymentName: this.deploymentName,
         namespace: this.namespace,
         replicas: this.replicas,
         triggerStg: this.triggerStg,
         updateStg: this.updateStg
       };
-      console.log('deployment.formData====>', formData);
+      console.log('create.formData====>', formData);
+      if (!this.validateForm(formData)) {
+        return;
+      }
+      this.createDeployment(formData);
+      this.$refs.deployModal.closeModal();
+    },
+    openUpdateModal(id) {
+      this.mode = 'update';
+      console.log('deploymentId===>', id);
+      // get data from state
+      const deployment = this.getDeployment(id);
+      console.log('@deployment===>', deployment);
+      // set data
+      this.id = id;
+      this.deploymentName = deployment.deploymentName;
+      this.namespace = deployment.namespace;
+      this.replicas = deployment.replicas;
+      this.triggerStg = deployment.triggerStg;
+      this.updateStg = deployment.updateStg;
+      this.modalTitle = 'Deployment 수정';
+      this.$refs.deployModal.openModal();
+      this.$nextTick(function() {
+        this.$refs.deploymentName.focus();
+      });
+    },
+    update() {
+      // set update data
+      const formData = {
+        id: this.id,
+        deploymentName: this.deploymentName,
+        namespace: this.namespace,
+        replicas: this.replicas,
+        triggerStg: this.triggerStg,
+        updateStg: this.updateStg
+      };
+      console.log('update.formData====>', formData);
+      if (!this.validateForm(formData)) {
+        return;
+      }
+      this.updateDeployment(formData);
       this.$refs.deployModal.closeModal();
     },
     resetForm() {
-      this.deployment = '';
+      this.deploymentName = '';
       this.namespace = '';
       this.replicas = 1;
       this.triggerStg = '';
@@ -185,10 +281,14 @@ export default {
     }
   },
   created() {
-    this.getDeployments();
+    this.getDeployments({
+      page: 0,
+      size: 10
+    });
   },
   computed: {
-    ...mapState('application', ['deployments'])
+    ...mapState('application', ['deployments']),
+    ...mapGetters('application', ['getDeployment'])
   }
 };
 </script>
