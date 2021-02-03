@@ -40,26 +40,19 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="left">
-                <em class="bul_d">D</em><a href="#">nginx deployment</a>
-              </td>
-              <td>default</td>
-              <td>1</td>
-              <td>Config Change</td>
-              <td>Recreate</td>
-              <td>2018-12-01 00:00:00</td>
-            </tr>
-            <tr>
-              <td class="left">
-                <em class="bul_d">D</em><a href="#">jenkis deployment</a>
-              </td>
-              <td>flying cube 2.0</td>
-              <td>1</td>
-              <td>Image Change</td>
-              <td>Rolling</td>
-              <td>2018-12-01 00:00:00</td>
-            </tr>
+            <template v-for="deployment in deployments" :key="deployment.id">
+              <tr>
+                <td class="left">
+                  <em class="bul_d">D</em
+                  ><a href="#">{{ deployment.deploymentName }}</a>
+                </td>
+                <td>{{ deployment.namespace }}</td>
+                <td>{{ deployment.replicas }}</td>
+                <td>{{ deployment.triggerStg }}</td>
+                <td>{{ deployment.updateStg }}</td>
+                <td>{{ deployment.createdDt }}</td>
+              </tr>
+            </template>
           </tbody>
         </table>
         <!--s:paging-->
@@ -139,6 +132,7 @@
 <script>
 import Pagination from '@/components/Pagination.vue';
 import Modal from '@/components/Modal.vue';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'Deployment',
@@ -156,6 +150,8 @@ export default {
     };
   },
   methods: {
+    ...mapActions('application', ['getDeployments']),
+
     openModal() {
       console.log('opening modal......');
       this.resetForm();
@@ -187,6 +183,12 @@ export default {
       this.triggerStg = '';
       this.updateStg = '';
     }
+  },
+  created() {
+    this.getDeployments();
+  },
+  computed: {
+    ...mapState('application', ['deployments'])
   }
 };
 </script>

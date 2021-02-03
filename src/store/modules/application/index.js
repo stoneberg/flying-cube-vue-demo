@@ -1,20 +1,12 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-
 import state from './state';
 import * as getters from './getters';
 import * as mutations from './mutations';
 import * as actions from './actions';
 
-import application from './modules/application';
-
-export default new Vuex.Store({
+export default {
+  namespaced: true,
   state,
   getters,
   mutations,
-  actions,
-
-  modules: {
-    application
-  }
-});
+  actions
+};
