@@ -4,12 +4,12 @@
     <div class="sub_title">
       <h3>Deployment</h3>
       <div class="search_box">
-        <input type="text" v-model="searchName" placeholder="Deployment명" /><a
-          href="#"
-          class="btn_search"
-          @click.prevent="search()"
-          >검색</a
-        >
+        <input
+          type="text"
+          @keyup.enter="search()"
+          v-model="searchName"
+          placeholder="Deployment명"
+        /><a href="#" class="btn_search" @click.prevent="search()">검색</a>
       </div>
       <div class="fr">
         <a href="#" @click.prevent="openCreateModal()" class="btn_create"
@@ -138,6 +138,15 @@
         <button v-else class="btn_pop put" @click="update()" type="button">
           수정
         </button>
+        <button
+          @click="remove()"
+          v-if="mode === 'update'"
+          class="btn_pop put"
+          style="background-color: red;"
+          type="button"
+        >
+          삭제
+        </button>
       </template>
     </Modal>
   </teleport>
@@ -174,7 +183,8 @@ export default {
     ...mapActions('application', [
       'getDeployments',
       'createDeployment',
-      'updateDeployment'
+      'updateDeployment',
+      'deleteDeployment'
     ]),
     search() {
       //   if (!this.searchName) {
@@ -271,6 +281,12 @@ export default {
       }
       this.updateDeployment(formData);
       this.$refs.deployModal.closeModal();
+    },
+    remove() {
+      if (window.confirm('Do you really want to delete?')) {
+        this.deleteDeployment(this.id);
+        this.$refs.deployModal.closeModal();
+      }
     },
     resetForm() {
       this.deploymentName = '';

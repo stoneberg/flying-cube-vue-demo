@@ -36,3 +36,11 @@ export const updateDeployment = async ({ commit }, data) => {
     commit('UPDATE_DEPLOYMENT', response.data.data);
   }
 };
+
+export const deleteDeployment = async ({ commit, dispatch }, id) => {
+  console.log('id>>>>>>', id);
+  const response = await ApplicationApi.deployment.delete(id);
+  if (response.status === 200) {
+    commit('DELETE_DEPLOYMENT', id);
+  }
+};
