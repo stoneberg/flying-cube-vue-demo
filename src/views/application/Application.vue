@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Left from '@/components/Left.vue';
+import Left from '@/components/layout/Left.vue';
 
 export default {
   name: 'Application',

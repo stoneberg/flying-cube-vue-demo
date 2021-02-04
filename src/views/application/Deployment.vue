@@ -159,8 +159,8 @@
 </template>
 
 <script>
-import Pagination from '@/components/Pagination.vue';
-import Modal from '@/components/Modal.vue';
+import Pagination from '@/components/common/Pagination.vue';
+import Modal from '@/components/common/Modal.vue';
 import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
