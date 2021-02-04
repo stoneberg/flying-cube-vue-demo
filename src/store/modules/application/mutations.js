@@ -2,11 +2,16 @@ export const SET_DEPLOYMENTS = (state, deployments) => {
   state.deployments = [].concat(deployments);
 };
 
-export const SET_DEPLOYMENT_PAGINATION = (state, data) => {
-  console.log('SET_DEPLOYMENT_PAGINATION====>', data);
-  state.deploymentPagination.totalElements = data.totalElements;
-  state.deploymentPagination.currentPage = data.number + 1;
-  state.deploymentPagination.pageSize = data.size;
+export const SET_DEPLOYMENT_PAGINATION = (
+  state,
+  { totalElements, number, size }
+) => {
+  console.log('@@@totalElements====>', totalElements);
+  console.log('@@@number====>', number);
+  console.log('@@@size====>', size);
+  state.deploymentPagination.totalElements = totalElements;
+  state.deploymentPagination.number = number;
+  state.deploymentPagination.size = size;
 };
 
 export const SAVE_DEPLOYMENT = (state, deployment) => {

@@ -63,7 +63,12 @@
           </tbody>
         </table>
         <!--s:paging-->
-        <Pagination />
+        <Pagination
+          :totalElements="deploymentPagination.totalElements"
+          :number="deploymentPagination.number"
+          :size="deploymentPagination.size"
+          @pageMove="pageMove"
+        />
         <!--e:paging-->
       </div>
     </div>
@@ -186,6 +191,15 @@ export default {
       'updateDeployment',
       'deleteDeployment'
     ]),
+    pageMove(pageNo) {
+      console.log('pageMove=============================>', pageNo);
+      this.page = pageNo - 1; // jpa default: 0
+      this.getDeployments({
+        deploymentName: this.searchName,
+        page: this.page,
+        size: 10
+      });
+    },
     search() {
       //   if (!this.searchName) {
       //     alert('deployment name is empty!');
@@ -303,7 +317,7 @@ export default {
     });
   },
   computed: {
-    ...mapState('application', ['deployments']),
+    ...mapState('application', ['deployments', 'deploymentPagination']),
     ...mapGetters('application', ['getDeployment'])
   }
 };
