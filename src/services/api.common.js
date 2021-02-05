@@ -57,11 +57,12 @@ Api.interceptors.response.use(
         .then(res => {
           console.log('@retry.jwt====>', res);
           localStorage.setItem('accessToken', res.accessToken);
+          localStorage.setItem('refreshToken', res.refreshToken);
           originalRequest.headers['Authorization'] =
             'Bearer ' + res.accessToken;
           return axios(originalRequest);
         });
-    }
+    } // need else block to handle other error status
     return Promise.reject(error);
   }
 );

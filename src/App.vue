@@ -7,11 +7,13 @@
 </template>
 
 <script>
-const default_layout = 'default';
+const default_layout = 'Default';
 export default {
   computed: {
     layout() {
-      return (this.$route.meta.layout || default_layout) + '-layout';
+      console.log('Layout===>', this.$route.meta.layout);
+      console.log('Layout===>', default_layout);
+      return (this.$route.meta.layout || default_layout) + 'Layout';
     }
   }
 };

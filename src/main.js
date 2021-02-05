@@ -8,6 +8,6 @@ import SimpleLayout from './components/layout/SimpleLayout.vue';
 const app = createApp(App);
 app.use(store);
 app.use(router);
-app.use(DefaultLayout);
-app.use(SimpleLayout);
+app.component('Default', DefaultLayout);
+app.component('Simple', SimpleLayout);
 app.mount('#app');
