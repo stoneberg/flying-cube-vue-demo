@@ -221,32 +221,30 @@
             <table class="type_board">
               <tbody>
                 <tr>
-                  <td>
-                    <nobr><a href="">인프라 추가기능설정 메뉴얼</a></nobr>
-                  </td>
+                  <td><a href="">인프라 추가기능설정 메뉴얼</a></td>
                   <td>2019-03-08</td>
                 </tr>
                 <tr>
                   <td>
-                    <nobr><a href="">IPC 자원 최적화 기능 메뉴얼</a></nobr>
+                    <a href="">IPC 자원 최적화 기능 메뉴얼</a>
                   </td>
                   <td>2019-03-04</td>
                 </tr>
                 <tr>
                   <td>
-                    <nobr><a href="">IPC 운영이관 전 준비사항</a></nobr>
+                    <a href="">IPC 운영이관 전 준비사항</a>
                   </td>
                   <td>2019-02-28</td>
                 </tr>
                 <tr>
                   <td>
-                    <nobr><a href="">공지사항입니다.</a></nobr>
+                    <a href="">공지사항입니다.</a>
                   </td>
                   <td>2019-02-15</td>
                 </tr>
                 <tr>
                   <td>
-                    <nobr><a href="">공지사항입니다.</a></nobr>
+                    <a href="">공지사항입니다.</a>
                   </td>
                   <td>2019-02-11</td>
                 </tr>
@@ -266,31 +264,31 @@
               <tbody>
                 <tr>
                   <td>
-                    <nobr><a href="">인프라 추가기능설정 메뉴얼</a></nobr>
+                    <a href="">인프라 추가기능설정 메뉴얼</a>
                   </td>
                   <td>2019-03-08</td>
                 </tr>
                 <tr>
                   <td>
-                    <nobr><a href="">IPC 자원 최적화 기능 메뉴얼</a></nobr>
+                    <a href="">IPC 자원 최적화 기능 메뉴얼</a>
                   </td>
                   <td>2019-03-04</td>
                 </tr>
                 <tr>
                   <td>
-                    <nobr><a href="">IPC 운영이관 전 준비사항</a></nobr>
+                    <a href="">IPC 운영이관 전 준비사항</a>
                   </td>
                   <td>2019-02-28</td>
                 </tr>
                 <tr>
                   <td>
-                    <nobr><a href="">공지사항입니다.</a></nobr>
+                    <a href="">공지사항입니다.</a>
                   </td>
                   <td>2019-02-15</td>
                 </tr>
                 <tr>
                   <td>
-                    <nobr><a href="">공지사항입니다.</a></nobr>
+                    <a href="">공지사항입니다.</a>
                   </td>
                   <td>2019-02-11</td>
                 </tr>
