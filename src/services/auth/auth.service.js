@@ -8,10 +8,11 @@ export default {
     return Api.post(`${END_POINT}/signin`, data);
   },
 
-  signout(username) {
-    return Api.delete(`${END_POINT}/signout/${username}`);
-  },
   refresh(data) {
     return Api.post(`${END_POINT}/refresh`, data);
+  },
+
+  signout(username) {
+    return Api.delete(`${END_POINT}/signout/${username}`);
   }
 };

@@ -8,7 +8,7 @@ export const signin = async ({ commit }, data) => {
     localStorage.setItem('user', JSON.stringify(response.data.user));
     localStorage.setItem('accessToken', response.data.accessToken);
     localStorage.setItem('refreshToken', response.data.refreshToken);
-    console.log('user====>', response.data.user);
+    console.log('@user====>', response.data.user);
     commit('SET_USER', response.data.user);
     if (localStorage.getItem('accessToken') != null) {
       router.push({ name: 'main' });

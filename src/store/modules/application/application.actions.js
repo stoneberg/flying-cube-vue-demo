@@ -12,11 +12,10 @@ export const getDeployments = async ({ commit }, params) => {
   }
 };
 
-export const createDeployment = async ({ commit, dispatch }, data) => {
+export const createDeployment = async ({ dispatch }, data) => {
   const response = await ApplicationApi.deployment.save(data);
   if (response.status === 200) {
-    commit('SET_DEPLOYMENT', response.data.data);
-    dispatch('getDeployments');
+    dispatch('getDeployments', { page: 0, size: 10 });
   }
 };
 
@@ -27,7 +26,7 @@ export const updateDeployment = async ({ commit }, data) => {
   }
 };
 
-export const deleteDeployment = async ({ commit, dispatch }, id) => {
+export const deleteDeployment = async ({ commit }, id) => {
   const response = await ApplicationApi.deployment.delete(id);
   if (response.status === 200) {
     commit('DELETE_DEPLOYMENT', id);

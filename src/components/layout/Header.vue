@@ -14,12 +14,26 @@
         </ul>
       </div>
       <!--e:location-->
-      <p class="logout"><a href="#">로그아웃</a></p>
-      <p class="personal">홍길동님</p>
+      <p class="logout" @click="logout"><a href="#">로그아웃</a></p>
+      <p class="personal">{{ getUser.username }}</p>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { mapState, mapActions, mapGetters } from 'vuex';
+
+export default {
+  name: 'Header',
+  methods: {
+    ...mapActions(['signout']),
+    logout() {
+      console.log('logout===============>');
+      this.signout();
+    }
+  },
+  computed: {
+    ...mapGetters('auth', ['getUser'])
+  }
+};
 </script>

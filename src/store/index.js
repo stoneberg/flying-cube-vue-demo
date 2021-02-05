@@ -7,6 +7,7 @@ import * as mutations from './mutations';
 import * as actions from './actions';
 
 import application from './modules/application';
+import auth from './modules/auth';
 
 export default new Vuex.Store({
   state,
@@ -15,6 +16,7 @@ export default new Vuex.Store({
   actions,
 
   modules: {
-    application
+    application,
+    auth
   }
 });

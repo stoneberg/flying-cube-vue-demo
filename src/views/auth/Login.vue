@@ -45,7 +45,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['signin']),
+    ...mapActions('auth', ['signin']),
     handleSubmit() {
       this.signin(this.login);
     }
