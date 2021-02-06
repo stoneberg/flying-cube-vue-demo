@@ -9,10 +9,10 @@ Api.interceptors.request.use(
   async function(config) {
     let accessToken = localStorage.getItem('accessToken');
     console.log('@accessToken=====>', accessToken);
-    config.headers = Object.assign(
-      { Authorization: `Bearer ${accessToken}` },
-      config.headers
-    );
+    config.headers = {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: 'application/json'
+    };
     return config;
   },
   function(error) {
@@ -34,15 +34,14 @@ Api.interceptors.response.use(
     console.log('@response.error.status====>', error.response.status);
     const originalRequest = error.config;
     const refreshToken = localStorage.getItem('refreshToken');
+    const errorStatus = error.response.status;
+    console.log('@refreshToke==========>', refreshToken);
+    console.log('@refreshToke==========>', !refreshToken);
+    console.log('@refreshToke==========>', refreshToken == 'null');
 
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      error.config &&
-      !error.config.retry &&
-      refreshToken
-    ) {
-      error.config.retry = true;
+    if (errorStatus === 401 && !originalRequest.retry && refreshToken) {
+      console.log('1#####################################');
+      originalRequest.retry = true;
       console.log('토큰이 이상한 오류일 경우');
       return fetch('http://127.0.0.1:9090/api/auth/refresh/', {
         method: 'POST',
@@ -62,7 +61,13 @@ Api.interceptors.response.use(
             'Bearer ' + res.accessToken;
           return axios(originalRequest);
         });
-    } // need else block to handle other error status
+    } else {
+      console.log('2#####################################');
+      // need else block to handle other error status
+      if (errorStatus === 404) {
+        console.error('404 error');
+      }
+    }
     return Promise.reject(error);
   }
 );

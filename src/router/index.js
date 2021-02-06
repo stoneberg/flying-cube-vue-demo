@@ -64,8 +64,9 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // 로그인 필요한 페이지 접근 시
   if (to.matched.some(record => record.meta.requiresAuth)) {
+    const accessToken = localStorage.getItem('accessToken');
     // jwt 토큰 존재 여부로 로그인 여부 판단
-    if (!localStorage.getItem('accessToken')) {
+    if (!accessToken || accessToken === 'null') {
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
