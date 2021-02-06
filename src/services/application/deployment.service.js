@@ -4,23 +4,23 @@ const END_POINT = '/api/application/deployments'; // VUE_APP_FC2_API=http://loca
 
 // service api be used by feature.store.action
 export default {
-  async getAll(params) {
+  getAll(params) {
     return Api.get(END_POINT, { params });
   },
 
-  async get(id) {
+  get(id) {
     return Api.get(`${END_POINT}/${id}`);
   },
 
-  async save(data) {
+  save(data) {
     return Api.post(END_POINT, data);
   },
 
-  async update(id, data) {
+  update(id, data) {
     return Api.put(`${END_POINT}/${id}`, data);
   },
 
-  async delete(id) {
+  delete(id) {
     return Api.delete(`${END_POINT}/${id}`);
   }
 };

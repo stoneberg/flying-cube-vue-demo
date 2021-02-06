@@ -16,14 +16,6 @@ export const signin = async ({ commit }, data) => {
   }
 };
 
-export const refresh = async ({ commit }, data) => {
-  console.log('refresh>>>>>>>>>>>>>>>>>>>>>>>');
-  const response = await AuthApi.signin(data);
-  console.log('isLogin OK?====>', response.data);
-  localStorage.setItem('accessToken', response.data.accessToken);
-  localStorage.setItem('refreshToken', response.data.refreshToken);
-};
-
 export const signout = ({ commit }) => {
   console.log('signout>>>>>>>>>>>>>>>>>>>>>>>');
   const user = null;

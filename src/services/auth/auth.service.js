@@ -8,8 +8,8 @@ export default {
     return Api.post(`${END_POINT}/signin`, data);
   },
 
-  refresh(data) {
-    return Api.post(`${END_POINT}/refresh`, data);
+  refreshToken(data) {
+    return Api.post(`${END_POINT}/token/refresh`, data);
   },
 
   signout(username) {
