@@ -233,7 +233,7 @@ export default {
         alert('namespace is empty!');
         return false;
       } else if (!formData.replicas) {
-        alert('namespace is empty!');
+        alert('replicas is empty!');
         return false;
       } else if (!formData.triggerStg) {
         alert('triggerStg is empty!');
