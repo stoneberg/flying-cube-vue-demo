@@ -33,24 +33,21 @@ Api.interceptors.response.use(
     // Do something with response error
     console.log('@response.error====>', error.config);
     console.log('@response.error.status====>', error.response.status);
-    console.log('@response.error.data====>', error.response.data);
     const originalRequest = error.config;
-    const message = error.response.data.message;
     const errorStatus = error.response.status;
     const refreshToken = localStorage.getItem('refreshToken');
-    console.log('@refreshToken====>', refreshToken);
 
-    if (errorStatus === 401 && refreshToken) {
-      console.log('expired jwt #####################################');
-      console.error('401 error======>', message);
+    if (errorStatus === 401 && !originalRequest.retry && refreshToken) {
+      console.log('401 #####################################');
+      originalRequest.retry = true;
+      console.log('토큰이 이상한 오류일 경우');
       return fetchAccessToken(refreshToken, originalRequest);
+    } else {
+      console.log('Else ####################################');
+      if (errorStatus === 404) {
+        console.error('404 error');
+      }
     }
-
-    if (errorStatus === 401 && !refreshToken) {
-      console.log('unauthenticated ##################################');
-      console.error('401 error======>', message);
-    }
-
     return Promise.reject(error);
   }
 );
@@ -67,6 +64,7 @@ async function fetchAccessToken(refreshToken, originalRequest) {
     originalRequest.headers['Authorization'] = 'Bearer ' + newAccessToken;
     return await axios(originalRequest);
   } catch (error) {
+    originalRequest.retry = false;
     console.log(error);
   }
 }
