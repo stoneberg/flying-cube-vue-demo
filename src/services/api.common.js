@@ -37,36 +37,35 @@ Api.interceptors.response.use(
     const errorStatus = error.response.status;
     const refreshToken = localStorage.getItem('refreshToken');
 
-    if (errorStatus === 401 && !originalRequest.retry && refreshToken) {
-      console.log('401 #####################################');
-      originalRequest.retry = true;
-      console.log('토큰이 이상한 오류일 경우');
-      return fetchAccessToken(refreshToken, originalRequest);
-    } else {
-      console.log('Else ####################################');
-      if (errorStatus === 404) {
-        console.error('404 error');
-      }
+    if (errorStatus === 401 && refreshToken) {
+      console.log('Token Expired #####################################');
+      return fetch('http://localhost:9090/api/auth/refresh/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          refreshToken: refreshToken
+        })
+      })
+        .then(res => res.json())
+        .then(res => {
+          console.log('@retry.jwt====>', res);
+          localStorage.setItem('accessToken', res.accessToken);
+          localStorage.setItem('refreshToken', res.refreshToken);
+          originalRequest.headers['Authorization'] =
+            'Bearer ' + res.accessToken;
+          return axios(originalRequest);
+        });
     }
+
+    console.log('Other Error #####################################');
+    if (errorStatus === 401 && !refreshToken) {
+      console.error('404 error');
+    }
+
     return Promise.reject(error);
   }
 );
-
-async function fetchAccessToken(refreshToken, originalRequest) {
-  try {
-    const response = await Api.post('/api/auth/token/refresh/', {
-      refreshToken: refreshToken
-    });
-    const newAccessToken = response.data.accessToken;
-    const newRefreshToken = response.data.refreshToken;
-    localStorage.setItem('accessToken', newAccessToken);
-    localStorage.setItem('refreshToken', newRefreshToken);
-    originalRequest.headers['Authorization'] = 'Bearer ' + newAccessToken;
-    return await axios(originalRequest);
-  } catch (error) {
-    originalRequest.retry = false;
-    console.log(error);
-  }
-}
 
 export default Api;
