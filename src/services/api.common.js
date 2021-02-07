@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from '@/shared/utils/toast-service';
 
 const Api = axios.create({
   baseURL: process.env.VUE_APP_FC2_API
@@ -7,12 +8,11 @@ const Api = axios.create({
 // Add a request interceptor
 Api.interceptors.request.use(
   async function(config) {
-    let accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem('accessToken');
     console.log('@accessToken=====>', accessToken);
-    config.headers = {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: 'application/json'
-    };
+    if (accessToken) {
+      config.headers['Authorization'] = 'Bearer ' + accessToken;
+    }
     return config;
   },
   function(error) {
@@ -24,22 +24,29 @@ Api.interceptors.request.use(
 // Add a response interceptor
 Api.interceptors.response.use(
   function(response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
+    if (response.data && response.data.message) {
+      const message = response.data.message;
+      console.log('@@@@@@message=========>', message);
+      toast.success(message);
+    }
     return response;
   },
   async function(error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    console.log('@response.error====>', error.config);
-    console.log('@response.error.status====>', error.response.status);
+    console.log('@error====>', error);
+    console.log('@error.config====>', error.config);
+    console.log('@error.response.status====>', error.response.status);
+    console.log('@error.response.data====>', error.response.data);
+    console.log('@error.response.data.code====>', error.response.data.code);
     const originalRequest = error.config;
     const errorStatus = error.response.status;
-    const refreshToken = localStorage.getItem('refreshToken');
+    const errorCode = error.response.data.code;
 
-    if (errorStatus === 401 && refreshToken) {
+    if (errorStatus === 401 && errorCode === 'GE0007') {
+      const refreshToken = localStorage.getItem('refreshToken');
       console.log('Token Expired #####################################');
-      return fetch('http://localhost:9090/api/auth/refresh/', {
+      return fetch(`${process.env.VUE_APP_FC2_API}/api/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -60,8 +67,8 @@ Api.interceptors.response.use(
     }
 
     console.log('Other Error #####################################');
-    if (errorStatus === 401 && !refreshToken) {
-      console.error('404 error');
+    if (errorStatus === 401 && errorCode !== 'GE0007') {
+      console.error('401 error');
     }
 
     return Promise.reject(error);
