@@ -26,7 +26,7 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 export default {
   name: 'Header',
   methods: {
-    ...mapActions(['signout']),
+    ...mapActions('auth', ['signout']),
     logout() {
       console.log('logout===============>');
       this.signout();
