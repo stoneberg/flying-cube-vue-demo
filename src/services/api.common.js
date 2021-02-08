@@ -2,7 +2,11 @@ import axios from 'axios';
 import toast from '@/shared/utils/toast-service';
 
 const Api = axios.create({
-  baseURL: process.env.VUE_APP_FC2_API
+  baseURL: process.env.VUE_APP_FC2_API,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  }
 });
 
 // Add a request interceptor

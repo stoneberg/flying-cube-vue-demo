@@ -5,7 +5,13 @@ const END_POINT = '/api/application/deployments'; // VUE_APP_FC2_API=http://loca
 // service api be used by feature.store.action
 export default {
   getAll(params) {
-    return Api.get(END_POINT, { params });
+    return Api.get(END_POINT, { params })
+      .then(res => {
+        console.log('res==>', res);
+      })
+      .catch(err => {
+        console.error('err==>', err);
+      });
   },
 
   get(id) {
