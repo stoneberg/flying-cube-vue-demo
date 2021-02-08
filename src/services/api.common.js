@@ -40,8 +40,21 @@ Api.interceptors.response.use(
     console.log('@error.response.data====>', error.response.data);
     console.log('@error.response.data.code====>', error.response.data.code);
     const originalRequest = error.config;
-    const errorStatus = error.response.status;
+    const errorStatus = (error.response && error.response.status) || null;
     const errorCode = error.response.data.code;
+    let message = '';
+    if (error.response.data && error.response.data.message) {
+      message = error.response.data.message;
+      console.log('@@@@@@message=========>', message);
+    }
+
+    if (
+      errorStatus === 401 &&
+      originalRequest.url.includes('/api/auth/refresh')
+    ) {
+      window.location.href = `${process.env.VUE_APP_FC2_API}/login`;
+      return Promise.reject(error);
+    }
 
     if (errorStatus === 401 && errorCode === 'GE0007') {
       const refreshToken = localStorage.getItem('refreshToken');
@@ -67,8 +80,8 @@ Api.interceptors.response.use(
     }
 
     console.log('Other Error #####################################');
-    if (errorStatus === 401 && errorCode !== 'GE0007') {
-      console.error('401 error');
+    if (errorStatus === 401 && errorCode === 'GE0004') {
+      toast.error(message);
     }
 
     return Promise.reject(error);
