@@ -7,10 +7,12 @@ export default {
   getAll(params) {
     return Api.get(END_POINT, { params })
       .then(res => {
-        console.log('res==>', res);
+        console.log('@@@res==>', res);
+        return res;
       })
       .catch(err => {
-        console.error('err==>', err);
+        console.error('@@@err==>', err);
+        return err;
       });
   },
 
