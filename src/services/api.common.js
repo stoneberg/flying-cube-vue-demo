@@ -39,14 +39,15 @@ Api.interceptors.response.use(
     return response;
   },
   function(error) {
-    store.dispatch('loader', false);
     const errorResponse = error.response;
     console.error('errorResponse========>', errorResponse);
     if (isTokenExpiredError(errorResponse)) {
+      store.dispatch('loader', false);
       return resetTokenAndReattemptRequest(error);
     } else {
       handleRestRequestError(errorResponse);
     }
+    store.dispatch('loader', false);
     // If the error is due to other reasons, we just throw it back to axios
     return Promise.reject(error);
   }
@@ -80,12 +81,10 @@ let subscribers = [];
 
 async function resetTokenAndReattemptRequest(error) {
   try {
-    store.dispatch('loader', true);
     const { response: errorResponse } = error;
     const refreshToken = await tokenUtil.getItem('refreshToken'); // Your own mechanism to get the refresh token to refresh the JWT token
     if (!refreshToken) {
       // We can't refresh, throw the error anyway
-      store.dispatch('loader', false);
       return Promise.reject(error);
     }
     /* Proceed to the token refresh procedure
@@ -113,7 +112,6 @@ async function resetTokenAndReattemptRequest(error) {
       });
 
       if (!response.data) {
-        store.dispatch('loader', false);
         return Promise.reject(error);
       }
 
@@ -125,10 +123,8 @@ async function resetTokenAndReattemptRequest(error) {
       isAlreadyFetchingAccessToken = false;
       onAccessTokenFetched(newAccessToken);
     }
-    store.dispatch('loader', false);
     return retryOriginalRequest;
   } catch (err) {
-    store.dispatch('loader', false);
     return Promise.reject(err);
   }
 }

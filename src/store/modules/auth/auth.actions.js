@@ -1,6 +1,7 @@
 import AuthApi from '@/services/auth/auth.service.js';
 import UserApi from '@/services/usermgmt/usermgmt.service.js';
 import router from '@/router';
+import tokenUtil from '@/shared/utils/token-util';
 
 export const signin = async ({ commit }, data) => {
   const response = await AuthApi.signin(data);
@@ -27,8 +28,10 @@ export const signout = ({ commit }) => {
 };
 
 export const getUser = async ({ commit }) => {
-  const username = localStorage.getItem('username');
+  const username = await tokenUtil.getItem('username');
   console.log('@username====>', username);
-  const response = await UserApi.get(username);
-  commit('SET_USER', response.data.data);
+  if (username) {
+    const response = await UserApi.get(username);
+    commit('SET_USER', response.data.data);
+  }
 };
