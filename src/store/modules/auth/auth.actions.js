@@ -1,10 +1,11 @@
 import AuthApi from '@/services/auth/auth.service.js';
+import UserApi from '@/services/usermgmt/usermgmt.service.js';
 import router from '@/router';
 
 export const signin = async ({ commit }, data) => {
   const response = await AuthApi.signin(data);
   console.log('isLogin OK?====>', response.data);
-  localStorage.setItem('user', JSON.stringify(response.data.user));
+  localStorage.setItem('username', response.data.user.username);
   localStorage.setItem('accessToken', response.data.accessToken);
   localStorage.setItem('refreshToken', response.data.refreshToken);
   console.log('@user====>', response.data.user);
@@ -17,11 +18,17 @@ export const signin = async ({ commit }, data) => {
 };
 
 export const signout = ({ commit }) => {
-  console.log('signout>>>>>>>>>>>>>>>>>>>>>>>');
-  const user = null;
+  const user = {};
   commit('DELETE_USER', user);
-  localStorage.removeItem('user');
+  localStorage.removeItem('username');
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
   location.reload();
+};
+
+export const getUser = async ({ commit }) => {
+  const username = localStorage.getItem('username');
+  console.log('@username====>', username);
+  const response = await UserApi.get(username);
+  commit('SET_USER', response.data.data);
 };

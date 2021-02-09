@@ -14,5 +14,9 @@ export default {
 
   signout(username) {
     return Api.delete(`${END_POINT}/signout/${username}`);
+  },
+
+  get(id) {
+    return Api.get(`${END_POINT}/${id}`);
   }
 };

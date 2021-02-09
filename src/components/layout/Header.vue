@@ -15,7 +15,7 @@
       </div>
       <!--e:location-->
       <p class="logout" @click="logout"><a href="#">로그아웃</a></p>
-      <p class="personal">{{ getUser.username }}</p>
+      <p class="personal">{{ username }}</p>
     </div>
   </div>
 </template>
@@ -26,14 +26,16 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 export default {
   name: 'Header',
   methods: {
-    ...mapActions('auth', ['signout']),
+    ...mapActions('auth', ['signout', 'getUser']),
     logout() {
-      console.log('logout===============>');
       this.signout();
     }
   },
   computed: {
-    ...mapGetters('auth', ['getUser'])
+    ...mapGetters('auth', ['username'])
+  },
+  created() {
+    this.getUser();
   }
 };
 </script>

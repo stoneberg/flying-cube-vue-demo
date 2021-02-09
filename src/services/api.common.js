@@ -1,6 +1,7 @@
 import axios from 'axios';
 import tokenUtil from '@/shared/utils/token-util';
 import toast from '@/shared/utils/toast-service';
+import store from '@/store';
 
 const Api = axios.create({
   baseURL: process.env.VUE_APP_FC2_API,
@@ -13,6 +14,7 @@ const Api = axios.create({
 // Add a request interceptor
 Api.interceptors.request.use(
   async function(config) {
+    store.dispatch('loader', true);
     const accessToken = await tokenUtil.getItem('accessToken');
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -21,6 +23,7 @@ Api.interceptors.request.use(
   },
   function(error) {
     // Do something with request error
+    store.dispatch('loader', false);
     return Promise.reject(error);
   }
 );
@@ -28,6 +31,7 @@ Api.interceptors.request.use(
 // Add a response interceptor
 Api.interceptors.response.use(
   function(response) {
+    store.dispatch('loader', false);
     // if (response.data && response.data.message) {
     //   const message = response.data.message;
     //   toast.success(message);
@@ -35,6 +39,7 @@ Api.interceptors.response.use(
     return response;
   },
   function(error) {
+    store.dispatch('loader', false);
     const errorResponse = error.response;
     console.error('errorResponse========>', errorResponse);
     if (isTokenExpiredError(errorResponse)) {
@@ -75,10 +80,12 @@ let subscribers = [];
 
 async function resetTokenAndReattemptRequest(error) {
   try {
+    store.dispatch('loader', true);
     const { response: errorResponse } = error;
     const refreshToken = await tokenUtil.getItem('refreshToken'); // Your own mechanism to get the refresh token to refresh the JWT token
     if (!refreshToken) {
       // We can't refresh, throw the error anyway
+      store.dispatch('loader', false);
       return Promise.reject(error);
     }
     /* Proceed to the token refresh procedure
@@ -106,6 +113,7 @@ async function resetTokenAndReattemptRequest(error) {
       });
 
       if (!response.data) {
+        store.dispatch('loader', false);
         return Promise.reject(error);
       }
 
@@ -117,8 +125,10 @@ async function resetTokenAndReattemptRequest(error) {
       isAlreadyFetchingAccessToken = false;
       onAccessTokenFetched(newAccessToken);
     }
+    store.dispatch('loader', false);
     return retryOriginalRequest;
   } catch (err) {
+    store.dispatch('loader', false);
     return Promise.reject(err);
   }
 }

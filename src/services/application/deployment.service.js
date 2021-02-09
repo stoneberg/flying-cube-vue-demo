@@ -12,7 +12,7 @@ export default {
       })
       .catch(err => {
         console.error('@@@err==>', err);
-        return err;
+        return res;
       });
   },
 
