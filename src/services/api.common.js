@@ -32,6 +32,7 @@ Api.interceptors.request.use(
 Api.interceptors.response.use(
   function(response) {
     store.dispatch('loader', false);
+    console.log('normal response success===========>');
     // if (response.data && response.data.message) {
     //   const message = response.data.message;
     //   toast.success(message);
@@ -39,15 +40,14 @@ Api.interceptors.response.use(
     return response;
   },
   function(error) {
+    store.dispatch('loader', false);
     const errorResponse = error.response;
     console.error('errorResponse========>', errorResponse);
     if (isTokenExpiredError(errorResponse)) {
-      store.dispatch('loader', false);
       return resetTokenAndReattemptRequest(error);
     } else {
       handleRestRequestError(errorResponse);
     }
-    store.dispatch('loader', false);
     // If the error is due to other reasons, we just throw it back to axios
     return Promise.reject(error);
   }
@@ -95,8 +95,8 @@ async function resetTokenAndReattemptRequest(error) {
       /* We need to add the request retry to the queue
     since there another request that already attempt to
     refresh the token */
-      addSubscriber(access_token => {
-        errorResponse.config.headers.Authorization = 'Bearer ' + access_token;
+      addSubscriber(accessToken => {
+        errorResponse.config.headers.Authorization = 'Bearer ' + accessToken;
         resolve(axios(errorResponse.config));
       });
     });
@@ -129,9 +129,9 @@ async function resetTokenAndReattemptRequest(error) {
   }
 }
 
-function onAccessTokenFetched(access_token) {
+function onAccessTokenFetched(accessToken) {
   // When the refresh is successful, we start retrying the requests one by one and empty the queue
-  subscribers.forEach(callback => callback(access_token));
+  subscribers.forEach(callback => callback(accessToken));
   subscribers = [];
 }
 
