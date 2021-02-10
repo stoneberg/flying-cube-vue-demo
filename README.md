@@ -1,4 +1,4 @@
-# flying-cube-demo
+# flying-cube vuejs
 
 ## Project setup
 ```
