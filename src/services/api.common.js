@@ -81,18 +81,12 @@ async function resetTokenAndReattemptRequest(error) {
   try {
     const { response: errorResponse } = error;
     const refreshToken = await tokenUtil.getItem('refreshToken'); // Your own mechanism to get the refresh token to refresh the JWT token
+
     if (!refreshToken) {
-      // We can't refresh, throw the error anyway
       return Promise.reject(error);
     }
-    /* Proceed to the token refresh procedure
-    We create a new Promise that will retry the request,
-    clone all the request configuration from the failed
-    request in the error object. */
+
     const retryOriginalRequest = new Promise(resolve => {
-      /* We need to add the request retry to the queue
-        since there another request that already attempt to
-        refresh the token */
       addSubscriber(async accessToken => {
         errorResponse.config.headers.Authorization = 'Bearer ' + accessToken;
         store.dispatch('loader', true);
@@ -127,6 +121,7 @@ async function resetTokenAndReattemptRequest(error) {
     }
     return retryOriginalRequest;
   } catch (err) {
+    // Catch INVALID_REFRESH_TOKEN ERROR
     tokenUtil.removeItem('username');
     tokenUtil.removeItem('accessToken'); // save the newly refreshed access token for other requests to use
     tokenUtil.removeItem('refreshToken');

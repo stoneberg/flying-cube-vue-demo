@@ -1,10 +1,8 @@
 <template>
   <div id="app">
-    <div class="loading" v-if="isLoading">
-      <div id="indicator">
-        <span class="radius"></span>
-      </div>
-    </div>
+    <teleport to="#loader-root">
+      <Loader :isLoading="isLoading" />
+    </teleport>
     <component :is="layout">
       <router-view />
     </component>
@@ -12,11 +10,15 @@
 </template>
 
 <script>
+import Loader from '@/components/common/Loader.vue';
 const default_layout = 'Default';
 import { mapState } from 'vuex';
 export default {
+  components: {
+    Loader
+  },
   computed: {
-    ...mapState(['isLoading', 'refCount']),
+    ...mapState(['isLoading']),
     layout() {
       console.log('Layout===>', this.$route.meta.layout);
       console.log('Layout===>', default_layout);
@@ -46,6 +48,7 @@ export default {
 /* Transparent Overlay */
 .loading:before {
   content: '';
+  opacity: 0.2;
   display: block;
   position: fixed;
   top: 0;
@@ -57,6 +60,7 @@ export default {
 
 .loading:not(:required):after {
   content: '';
+  opacity: 0.2;
   display: block;
   font-size: 10px;
   width: 50px;
