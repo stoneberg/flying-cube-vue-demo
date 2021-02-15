@@ -83,7 +83,7 @@ export default {
 }
 
 #indicator span.radius {
-  border: 1px solid #ccc;
+  border: 0px solid #ccc;
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
