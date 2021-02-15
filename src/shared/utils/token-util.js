@@ -8,6 +8,11 @@ const tokenUtil = {
     return Promise.resolve().then(function() {
       return localStorage.getItem(key);
     });
+  },
+  removeItem: async function(key) {
+    return Promise.resolve().then(function() {
+      localStorage.removeItem(key);
+    });
   }
 };
 

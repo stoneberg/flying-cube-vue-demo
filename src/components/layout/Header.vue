@@ -35,7 +35,9 @@ export default {
     ...mapGetters('auth', ['username'])
   },
   created() {
+    console.log('=============================================');
     this.getUser();
+    console.log('=============================================');
   }
 };
 </script>

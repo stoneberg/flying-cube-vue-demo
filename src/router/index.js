@@ -19,7 +19,7 @@ const routes = [
     component: Login,
     meta: {
       layout: 'Simple',
-      guest: true
+      requiresAuth: false
     }
   },
   {
@@ -37,19 +37,13 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "deployment" */ '@/views/application/Deployment.vue'
-          ),
-        meta: {
-          requiresAuth: true
-        }
+          )
       },
       {
         path: 'pod',
         name: 'pod',
         component: () =>
-          import(/* webpackChunkName: "pod" */ '@/views/application/Pod.vue'),
-        meta: {
-          requiresAuth: true
-        }
+          import(/* webpackChunkName: "pod" */ '@/views/application/Pod.vue')
       },
       { path: '*', redirect: '/' } // otherwise redirect to home
     ]
@@ -63,10 +57,9 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   // 로그인 필요한 페이지 접근 시
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    const accessToken = localStorage.getItem('accessToken');
+  if (to.matched.some(record => !!record.meta.requiresAuth)) {
     // jwt 토큰 존재 여부로 로그인 여부 판단
-    if (!accessToken || accessToken === 'null') {
+    if (isInvalidTokenOnStorage()) {
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
@@ -87,7 +80,7 @@ router.beforeEach((to, from, next) => {
     }
   }
   // 로그인 필요 없는 페이지 접근 시
-  else if (to.matched.some(record => record.meta.guest)) {
+  else if (to.matched.some(record => !record.meta.requiresAuth)) {
     //     if (localStorage.getItem('jwt') == null) {
     //       next();
     //     } else {
@@ -99,5 +92,22 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
+function isInvalidTokenOnStorage() {
+  const accessToken = localStorage.getItem('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+
+  if (!accessToken || accessToken === 'null' || accessToken === 'undefined') {
+    return true;
+  } else if (
+    !refreshToken ||
+    refreshToken === 'null' ||
+    refreshToken === 'undefined'
+  ) {
+    return true;
+  }
+
+  return false;
+}
 
 export default router;

@@ -20,7 +20,10 @@ export default {
     layout() {
       console.log('Layout===>', this.$route.meta.layout);
       console.log('Layout===>', default_layout);
-      return (this.$route.meta.layout || default_layout) + 'Layout';
+      const currentLayout =
+        (this.$route.meta.layout || default_layout) + 'Layout';
+      console.log('Current Layout===>', currentLayout);
+      return currentLayout;
     }
   }
 };

@@ -1,5 +1,5 @@
-// module.exports = {
-//   devServer: {
-//     port: 8090
-//   }
-// };
+module.exports = {
+  devServer: {
+    port: 3300
+  }
+};
