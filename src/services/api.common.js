@@ -32,7 +32,6 @@ Api.interceptors.request.use(
 Api.interceptors.response.use(
   function(response) {
     store.dispatch('loader', false);
-    console.log('normal response success===========>');
     // if (response.data && response.data.message) {
     //   const message = response.data.message;
     //   toast.success(message);
@@ -42,9 +41,7 @@ Api.interceptors.response.use(
   function(error) {
     store.dispatch('loader', false);
     const errorResponse = error.response;
-    console.error('errorResponse========>', errorResponse);
     if (isAccessTokenExpiredError(errorResponse)) {
-      console.error('access token expired=======================>');
       return resetTokenAndReattemptRequest(error);
     } else {
       handleOtherRequestErrors(errorResponse);
@@ -81,13 +78,10 @@ let isAlreadyFetchingAccessToken = false;
 let subscribers = [];
 
 async function resetTokenAndReattemptRequest(error) {
-  console.log('1.================================================');
   try {
-    console.log('2.================================================');
     const { response: errorResponse } = error;
     const refreshToken = await tokenUtil.getItem('refreshToken'); // Your own mechanism to get the refresh token to refresh the JWT token
     if (!refreshToken) {
-      console.log('3.================================================');
       // We can't refresh, throw the error anyway
       return Promise.reject(error);
     }
@@ -95,22 +89,20 @@ async function resetTokenAndReattemptRequest(error) {
     We create a new Promise that will retry the request,
     clone all the request configuration from the failed
     request in the error object. */
-    console.log('4.================================================');
     const retryOriginalRequest = new Promise(resolve => {
       /* We need to add the request retry to the queue
         since there another request that already attempt to
         refresh the token */
-      console.log('5.================================================');
-      addSubscriber(accessToken => {
+      addSubscriber(async accessToken => {
         errorResponse.config.headers.Authorization = 'Bearer ' + accessToken;
-        resolve(axios(errorResponse.config));
-        console.log('18.================================================');
+        store.dispatch('loader', true);
+        const res = await axios(errorResponse.config);
+        resolve(res);
+        store.dispatch('loader', false);
       });
     });
 
-    console.log('7.================================================');
     if (!isAlreadyFetchingAccessToken) {
-      console.log('8.================================================');
       isAlreadyFetchingAccessToken = true;
       const response = await axios({
         method: 'post',
@@ -119,14 +111,11 @@ async function resetTokenAndReattemptRequest(error) {
           refreshToken: refreshToken
         }
       });
-      console.log('9.================================================');
 
       if (!response.data) {
-        console.log('10.================================================');
         return Promise.reject(error);
       }
 
-      console.log('11.================================================');
       const newAccessToken = response.data.accessToken;
       const newRefreshToken = response.data.refreshToken;
       tokenUtil.setItem('accessToken', newAccessToken); // save the newly refreshed access token for other requests to use
@@ -134,35 +123,26 @@ async function resetTokenAndReattemptRequest(error) {
 
       isAlreadyFetchingAccessToken = false;
 
-      console.log('12.================================================');
       onAccessTokenFetched(newAccessToken);
     }
-    console.log('13.================================================');
     return retryOriginalRequest;
   } catch (err) {
-    console.log('14.================================================');
-    console.error('refresh token expired=============>', err);
     tokenUtil.removeItem('username');
     tokenUtil.removeItem('accessToken'); // save the newly refreshed access token for other requests to use
     tokenUtil.removeItem('refreshToken');
     location.reload();
-    console.log('15.================================================');
     return Promise.reject(err);
   }
 }
 
 function onAccessTokenFetched(accessToken) {
-  console.log('14.================================================');
   // When the refresh is successful, we start retrying the requests one by one and empty the queue
   subscribers.forEach(callback => callback(accessToken));
   subscribers = [];
-  console.log('15.================================================');
 }
 
 function addSubscriber(callback) {
-  console.log('16.================================================');
   subscribers.push(callback);
-  console.log('17.================================================');
 }
 
 export default Api;

@@ -1,4 +1,5 @@
 import Api from '@/services/api.common';
+import toast from '@/shared/utils/toast-service';
 
 const END_POINT = '/api/application/deployments'; // VUE_APP_FC2_API=http://localhost:9090
 
@@ -6,7 +7,10 @@ const END_POINT = '/api/application/deployments'; // VUE_APP_FC2_API=http://loca
 export default {
   getAll(params) {
     return Api.get(END_POINT, { params }).then(res => {
-      console.log('@@@res==>', res);
+      if (res.data && res.data.message) {
+        const message = res.data.message;
+        toast.success(message);
+      }
       return res;
     });
     //   .catch(err => {
