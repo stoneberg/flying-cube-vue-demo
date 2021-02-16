@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Main from '@/views/main/Main.vue';
 import Login from '@/views/auth/Login.vue';
+import Callback from '@/views/auth/Callback.vue';
 import Application from '@/views/application/Application.vue';
 
 const routes = [
@@ -17,6 +18,15 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login,
+    meta: {
+      layout: 'Simple',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/callback',
+    name: 'callback',
+    component: Callback,
     meta: {
       layout: 'Simple',
       requiresAuth: false
