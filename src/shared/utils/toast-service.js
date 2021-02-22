@@ -1,21 +1,51 @@
 import 'izitoast/dist/css/iziToast.min.css';
-import iZtoast from 'izitoast';
+import iZitoast from 'izitoast';
+
+iZitoast.settings({
+  resetOnHover: true,
+  transitionIn: 'fadeInUp',
+  transitionOut: 'fadeOut',
+  timeout: 3000,
+  onOpening: function() {
+    console.log('callback open!');
+  },
+  onClosing: function() {
+    console.log('callback close!');
+  }
+});
 
 const toast = {
-  error: (message, title = 'Error') => {
-    return iZtoast.error({
+  info: (message, title = 'Info') => {
+    return iZitoast.info({
       title: title,
       message: message,
-      timeout: 3000,
-      position: 'bottomRight'
+      position: 'center',
+      titleColor: 'white',
+      messageColor: 'black',
+      color: '#4ACE35',
+      iconColor: ''
     });
   },
   success: (message, title = 'Success') => {
-    return iZtoast.success({
+    return iZitoast.success({
       title: title,
       message: message,
-      timeout: 2000,
-      position: 'bottomRight'
+      position: 'bottomRight',
+      titleColor: 'white',
+      messageColor: 'black',
+      color: '#3393FF',
+      iconColor: ''
+    });
+  },
+  error: (message, title = 'Error') => {
+    return iZitoast.error({
+      title: title,
+      message: message,
+      position: 'bottomRight',
+      titleColor: 'white',
+      messageColor: 'black',
+      color: '#FF3933',
+      iconColor: ''
     });
   }
 };

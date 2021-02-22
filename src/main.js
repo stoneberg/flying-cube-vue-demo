@@ -4,6 +4,7 @@ import router from './router';
 import store from './store';
 import Default from './components/layout/DefaultLayout.vue';
 import Simple from './components/layout/SimpleLayout.vue';
+import 'vue-material-design-icons/styles.css';
 
 const app = createApp(App);
 app.use(store);
