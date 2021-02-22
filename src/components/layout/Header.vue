@@ -24,12 +24,20 @@
 import SockJS from 'sockjs-client';
 import Stomp from 'webstomp-client';
 import { mapState, mapActions, mapGetters } from 'vuex';
-import axios from 'axios';
+import tokenService from '@/services/token/token.service';
+import storeUtil from '@/shared/utils/localstore-util';
+
+const END_POINT = `${process.env.VUE_APP_FC2_API}/ws`;
+const TOPIC = '/change/role';
 
 export default {
   name: 'Header',
   data() {
-    return {};
+    return {
+      stompClient: null,
+      socket: null,
+      connected: false
+    };
   },
   methods: {
     ...mapActions('auth', ['signout', 'getUser']),
@@ -37,39 +45,25 @@ export default {
       this.signout();
     },
     connect() {
-      this.socket = new SockJS('http://localhost:9090/stomp');
+      this.socket = new SockJS(END_POINT);
       this.stompClient = Stomp.over(this.socket);
       this.stompClient.connect(
         {},
         frame => {
           this.connected = true;
           console.log(frame);
-          this.stompClient.subscribe('/subscribe/role', payload => {
+          this.stompClient.subscribe(TOPIC, payload => {
             const target = JSON.parse(payload.body);
             // broadcast 이므로 특정 조건에 맞는 사용자일 경우에만 jwt reissue 로직을 타게 설정
-            const username = localStorage.getItem('username');
+            const username = storeUtil.getItem(storeUtil.USERNAME);
             if (target.username === username) {
               console.log('name is==>', target.username);
               console.log('call to refresh jwt========>');
-              const refreshToken = localStorage.getItem('refreshToken');
-              axios({
-                method: 'post',
-                url: `${process.env.VUE_APP_FC2_API}/api/auth/refresh`,
-                data: {
-                  refreshToken: refreshToken
-                }
-              })
-                .then(res => {
-                  console.log('refreshed tokens===>', res.data);
-                  const newAccessToken = res.data.accessToken;
-                  const newRefreshToken = res.data.refreshToken;
-                  localStorage.setItem('accessToken', newAccessToken); // save the newly refreshed access token for other requests to use
-                  localStorage.setItem('refreshToken', newRefreshToken);
-                  location.reload();
-                })
-                .catch(err => {
-                  console.error('@@@err==>', err);
-                });
+              const refreshToken = storeUtil.getItem(
+                storeUtil.REFRESH_TOKEN_KEY
+              );
+              console.log('refreshToken========>', refreshToken);
+              tokenService.getNewToken({ refreshToken });
             } // end if
           });
         },
@@ -89,12 +83,18 @@ export default {
     ...mapGetters('auth', ['username'])
   },
   created() {
-    console.log('=============================================');
-    this.getUser();
-    console.log('=============================================');
+    console.log('created=============================================');
   },
   mounted() {
     this.connect();
+  },
+  beforeUnmount() {
+    console.log('beforeUnmount=======================================');
+    const accessToken = storeUtil.getItem(storeUtil.ACCESS_TOKEN_KEY);
+    console.log('>>accessToken==============', accessToken);
+    // if (!accessToken) {
+    //   this.disconnect();
+    // }
   }
 };
 </script>

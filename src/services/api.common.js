@@ -1,5 +1,5 @@
 import axios from 'axios';
-import tokenUtil from '@/shared/utils/token-util';
+import storeUtil from '@/shared/utils/localstore-util';
 import toast from '@/shared/utils/toast-service';
 import store from '@/store';
 
@@ -15,7 +15,7 @@ const Api = axios.create({
 Api.interceptors.request.use(
   async function(config) {
     store.dispatch('loader', true);
-    const accessToken = await tokenUtil.getItem('accessToken');
+    const accessToken = storeUtil.getItem(storeUtil.ACCESS_TOKEN_KEY);
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
@@ -80,7 +80,7 @@ let subscribers = [];
 async function resetTokenAndReattemptRequest(error) {
   try {
     const { response: errorResponse } = error;
-    const refreshToken = await tokenUtil.getItem('refreshToken'); // Your own mechanism to get the refresh token to refresh the JWT token
+    const refreshToken = storeUtil.getItem(storeUtil.REFRESH_TOKEN_KEY); // Your own mechanism to get the refresh token to refresh the JWT token
 
     if (!refreshToken) {
       return Promise.reject(error);
@@ -112,8 +112,8 @@ async function resetTokenAndReattemptRequest(error) {
 
       const newAccessToken = response.data.accessToken;
       const newRefreshToken = response.data.refreshToken;
-      tokenUtil.setItem('accessToken', newAccessToken); // save the newly refreshed access token for other requests to use
-      tokenUtil.setItem('refreshToken', newRefreshToken);
+      storeUtil.setItem(storeUtil.ACCESS_TOKEN_KEY, newAccessToken); // save the newly refreshed access token for other requests to use
+      storeUtil.setItem(storeUtil.REFRESH_TOKEN_KEY, newRefreshToken);
 
       isAlreadyFetchingAccessToken = false;
 
@@ -122,9 +122,9 @@ async function resetTokenAndReattemptRequest(error) {
     return retryOriginalRequest;
   } catch (err) {
     // Catch INVALID_REFRESH_TOKEN ERROR
-    tokenUtil.removeItem('username');
-    tokenUtil.removeItem('accessToken'); // save the newly refreshed access token for other requests to use
-    tokenUtil.removeItem('refreshToken');
+    storeUtil.removeItem(storeUtil.USERNAME);
+    storeUtil.removeItem(storeUtil.ACCESS_TOKEN_KEY); // save the newly refreshed access token for other requests to use
+    storeUtil.removeItem(storeUtil.REFRESH_TOKEN_KEY);
     location.reload();
     return Promise.reject(err);
   }

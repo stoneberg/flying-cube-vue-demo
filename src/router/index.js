@@ -3,6 +3,7 @@ import Main from '@/views/main/Main.vue';
 import Login from '@/views/auth/Login.vue';
 import Callback from '@/views/auth/Callback.vue';
 import Application from '@/views/application/Application.vue';
+import tokenSerivce from '@/services/token/token.service';
 
 const routes = [
   {
@@ -66,10 +67,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  const isPublic = to.matched.some(record => !record.meta.requiresAuth);
+  const isPrivate = to.matched.some(record => !!record.meta.requiresAuth);
+
   // 로그인 필요한 페이지 접근 시
-  if (to.matched.some(record => !!record.meta.requiresAuth)) {
+  if (isPrivate) {
     // jwt 토큰 존재 여부로 로그인 여부 판단
-    if (isInvalidTokenOnStorage()) {
+    if (!tokenSerivce.isValidToken()) {
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
@@ -90,34 +94,12 @@ router.beforeEach((to, from, next) => {
     }
   }
   // 로그인 필요 없는 페이지 접근 시
-  else if (to.matched.some(record => !record.meta.requiresAuth)) {
-    //     if (localStorage.getItem('jwt') == null) {
-    //       next();
-    //     } else {
-    //       next({ name: 'userboard' });
-    //     }
-    //   } else {
-    //     next();
-    //   }
+  else if (isPublic && tokenSerivce.isValidToken()) {
+    // 이미 로그인된 상태라면
+    next('/'); // 메인으로 리다이렉트
+  } else {
     next();
   }
 });
-
-function isInvalidTokenOnStorage() {
-  const accessToken = localStorage.getItem('accessToken');
-  const refreshToken = localStorage.getItem('refreshToken');
-
-  if (!accessToken || accessToken === 'null' || accessToken === 'undefined') {
-    return true;
-  } else if (
-    !refreshToken ||
-    refreshToken === 'null' ||
-    refreshToken === 'undefined'
-  ) {
-    return true;
-  }
-
-  return false;
-}
 
 export default router;
