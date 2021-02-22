@@ -63,7 +63,10 @@ export default {
                 storeUtil.REFRESH_TOKEN_KEY
               );
               console.log('refreshToken========>', refreshToken);
-              tokenService.getNewToken({ refreshToken });
+              const response = tokenService.getNewToken({ refreshToken });
+              if (response.data) {
+                response.reloadTokens(response.data);
+              }
             } // end if
           });
         },

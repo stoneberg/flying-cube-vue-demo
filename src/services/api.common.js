@@ -2,6 +2,7 @@ import axios from 'axios';
 import storeUtil from '@/shared/utils/localstore-util';
 import toast from '@/shared/utils/toast-service';
 import store from '@/store';
+import tokenService from '@/services/token/token.service';
 
 const Api = axios.create({
   baseURL: process.env.VUE_APP_FC2_API,
@@ -98,6 +99,10 @@ async function resetTokenAndReattemptRequest(error) {
 
     if (!isAlreadyFetchingAccessToken) {
       isAlreadyFetchingAccessToken = true;
+
+      //   const response = await tokenService.getNewToken({ refreshToken });
+      //   console.log('@@@@@@response====>', response);
+
       const response = await axios({
         method: 'post',
         url: `${process.env.VUE_APP_FC2_API}/api/auth/refresh`,
@@ -122,10 +127,11 @@ async function resetTokenAndReattemptRequest(error) {
     return retryOriginalRequest;
   } catch (err) {
     // Catch INVALID_REFRESH_TOKEN ERROR
-    storeUtil.removeItem(storeUtil.USERNAME);
-    storeUtil.removeItem(storeUtil.ACCESS_TOKEN_KEY); // save the newly refreshed access token for other requests to use
-    storeUtil.removeItem(storeUtil.REFRESH_TOKEN_KEY);
-    location.reload();
+    tokenService.invalidateTokens();
+    // storeUtil.removeItem(storeUtil.USERNAME);
+    // storeUtil.removeItem(storeUtil.ACCESS_TOKEN_KEY); // save the newly refreshed access token for other requests to use
+    // storeUtil.removeItem(storeUtil.REFRESH_TOKEN_KEY);
+    // location.reload();
     return Promise.reject(err);
   }
 }
