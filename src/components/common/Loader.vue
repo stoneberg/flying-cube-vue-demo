@@ -61,9 +61,9 @@ export default {
 
 #indicator span {
   display: block;
-  background: url('../../assets/indicator.gif') 0 center no-repeat;
-  width: 80px;
-  height: 80px;
+  background: url('../../assets/indicator3.gif') 0 center no-repeat;
+  width: 100px;
+  height: 100px;
 }
 
 #indicator span.radius {

@@ -6,6 +6,7 @@ iZitoast.settings({
   transitionIn: 'fadeInUp',
   transitionOut: 'fadeOut',
   timeout: 3000,
+  closeOnClick: true,
   onOpening: function() {
     console.log('callback open!');
   },
@@ -21,7 +22,7 @@ const toast = {
       message: message,
       position: 'center',
       titleColor: 'white',
-      messageColor: 'black',
+      messageColor: 'white',
       color: '#4ACE35',
       iconColor: ''
     });
@@ -32,7 +33,7 @@ const toast = {
       message: message,
       position: 'bottomRight',
       titleColor: 'white',
-      messageColor: 'black',
+      messageColor: 'white',
       color: '#3393FF',
       iconColor: ''
     });
@@ -43,7 +44,7 @@ const toast = {
       message: message,
       position: 'bottomRight',
       titleColor: 'white',
-      messageColor: 'black',
+      messageColor: 'white',
       color: '#FF3933',
       iconColor: ''
     });
